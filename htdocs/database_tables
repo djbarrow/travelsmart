@@ -1,0 +1,209 @@
+create table user (
+user_id int(4) not null auto_increment,
+parent_user_id  int(4),
+is_permanent boolean not null,
+email_address_is_authenticated boolean not null,
+create_time datetime not null,
+name varchar(100) not null,
+is_male boolean not null,
+password_digest char(32) not null,
+email_address varchar(120) not null,
+primary_phone_number varchar(30) not null,
+secondary_phone_number varchar(30),
+address_location_id int(4) not null,
+email_style tinyint(1),
+primary key(user_id)
+);
+
+
+create table country (
+cc      char(2),
+name    varchar(60),
+adm1_region_name varchar(60),
+adm2_region_name varchar(60),
+has_adm2_regions boolean not null,
+sw_latitude float(7,4) not null,
+sw_longitude float(7,4) not null,
+ne_latitude float(7,4) not null,
+ne_longitude float(7,4) not null,
+primary key(cc)
+);
+
+create table adm1_region (
+ufi  int(2),
+rc   tinyint(1),
+cc1  char(2),
+adm1 char(2),
+name varchar(60) not null,
+sw_latitude float(7,4) not null,
+sw_longitude float(7,4) not null,
+ne_latitude float(7,4) not null,
+ne_longitude float(7,4) not null,
+primary key(ufi)
+);
+
+create table adm2_region (
+ufi   int(2),
+name  varchar(60),
+primary key(ufi)
+);
+
+
+create table location (
+ufi             int(2),
+adm1_region_ufi int(2),
+name varchar(60) not null,
+latitude float(7,4) not null,
+longitude float(7,4) not null,
+primary key(ufi)
+);
+
+create table user_location (
+location_id int(4) not null auto_increment,
+user_id     int(4) not null,
+nearby_location_ufi  int(2),
+name varchar(120) not null,
+latitude float(7,4) not null,
+longitude float(7,4) not null,
+visible boolean not null,
+primary key(location_id)
+);
+
+create table vehicle (
+vehicle_id int(4) not null auto_increment,
+user_id    int(4) not null,
+make       varchar(40) not null,
+model      varchar(40) not null,
+colour     varchar(30) not null,
+vehicle_registration_number varchar(20) not null,
+vehicle_type int(4) not null,
+visible boolean not null, 
+primary key(vehicle_id)
+);
+
+create table vehicle_type
+(
+type_id   int(4) not null,
+type_name varchar(50) not null,
+primary_fuel int(4) not null,
+cc        int(1) not null,
+mpg       int(1) not null,
+primary key(type_id)
+);
+
+create table fuel
+(
+fuel_id int(4) not null,
+fuel_name varchar(100) not null,
+carbon_footprint_per_litre float(3,2) not null,
+primary key(fuel_id) 
+);
+
+
+create table trip (
+trip_id       int(4) not null auto_increment,
+user_id       int(4) not null,
+create_time   datetime not null,
+searchable    boolean not null,
+is_driver     boolean not null,
+is_passenger  boolean not null,
+regular_trip  boolean not null,
+trip_day1     boolean not null,
+trip_day2     boolean not null,
+trip_day3     boolean not null,
+trip_day4     boolean not null,
+trip_day5     boolean not null,
+trip_day6     boolean not null,
+trip_day7     boolean not null,
+trip_date     date,
+earliest_possible_trip_departure_time int,
+latest_possible_trip_arrival_time int,
+expected_trip_duration_mins   int,
+is_return_trip	boolean not null,
+return_trip_earliest_possible_trip_departure_time int,
+return_trip_latest_possible_trip_arrival_time int,
+return_trip_expected_trip_duration_mins   int,
+trip_origin_location_id	      int(4),
+trip_origin_latitude float(7,4) not null,
+trip_origin_longitude float(7,4) not null,
+trip_destination_location_id  int(4),
+trip_destination_latitude float(7,4) not null,
+trip_destination_longitude float(7,4) not null,
+vehicle_id 	int(4),
+comments       varchar(1024),
+primary key(trip_id)
+);
+
+
+create table tripmatch1
+(
+user_id      int(4) not null,
+num_trip_matches int not null,
+trip_id int(4) not null,
+primary key(user_id)
+);
+
+create table tripmatch2
+(
+user_id       int(4) not null,
+other_trip_id int(4) not null,
+rank int(1) not null
+);
+
+create table saved_tripmatch
+(
+tripmatch_id int(4) not null auto_increment,
+match_initiator_id  int(4) not null,
+user_id    int(4) not null,
+other_user_id  int(4) not null,
+trip_id int(4) not null,
+other_trip_id int(4) not null,
+match_time datetime not null,
+expire_time datetime,
+satisfaction_done boolean not null,
+satisfaction tinyint(1),
+satisfaction_comments varchar(256),
+maybe_forged boolean not null,
+primary key(tripmatch_id)
+);
+
+create table user_ip_addr_list
+(
+user_id    int(4) not null,	
+ip_addr varchar(30)
+);
+
+create table log
+(
+user_id    int(4) not null,	
+ip_addr    varchar(30) not null,
+log_time   datetime not null,
+log_entry  varchar(512) not null
+);
+
+create table ban_user
+(
+user_id    int(4) not null,
+banned_by_login_authentication boolean not null,
+banned_by_cookie boolean not null,
+banned_by_ip_address boolean not null,
+primary key(user_id)
+);
+
+create table invitation_list
+(
+email_address varchar(120) not null,
+primary key(email_address)
+);
+
+create table stats
+(
+stats_id tinyint(1) not null,
+create_time datetime not null,
+number_of_users_registered int(2) not null,
+number_of_matched_trips    int(2) not null,
+total_mileage_saved float(10,1) not null,
+litres_of_fuel_saved float(10,1) not null,
+carbon_footprint_saved float (10,1) not null,
+primary key(stats_id)
+);

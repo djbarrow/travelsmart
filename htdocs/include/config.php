@@ -1,0 +1,19 @@
+<?php
+define("MULTIPLE_COUNTRIES",0);
+$single_country="EI";
+$single_country_name="Ireland";
+define("DEBUG_FAKE_MANY_MATCHES",0);
+define("DEBUG_MANY_DATABASE_ENTRIES",0);
+define("DEBUG_DONT_SEND_EMAIL",0);
+define("EMAIL_AUTHENTICATION",1);
+define("HAVE_TERMS_OF_USE",1);
+define("EMAIL_GROUP_SIZE",1);
+define("DISPLAY_STATS",0);
+define("SHOW_SPAM_PRECAUTIONS",1);
+define("INTERNATIONAL_EDITION",0);
+if(INTERNATIONAL_EDITION)
+   $add_new_location="add_new_location_int.php";
+else
+   $add_new_location="add_new_location.php";
+define("GOOGLE_ANALYTICS",1);
+?>

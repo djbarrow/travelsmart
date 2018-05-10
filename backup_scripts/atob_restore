@@ -1,0 +1,11 @@
+#!/bin/bash
+#echo "drop database atob; create database atob;" | mysql -uroot -ppassword 
+echo "create database atob;" | mysql -uroot -ppassword
+gunzip -c backup/atob_database-$1.gz | mysql -uroot -pglantane atob
+olddir=`pwd`
+documentroot=/Applications/XAMPP/xamppfiles/htdocs
+cd $documentroot
+rm -rf uploads
+tar -zxpvf $olddir/backup/atob_uploads-$1.tgz
+#chown -R apache:apache uploads
+cd $olddir

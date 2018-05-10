@@ -1,0 +1,22 @@
+Name: Timmy O'Malley email: timmy@aol.com
+Distance per trip saved by carpooling 180.0KM.
+Number of trips per week matched 10.
+Primary phone number: +353-86-125435
+I am a passenger.
+I am travelling on MON TUE WED THU FRI.
+I am travelling from Aghabulloge,Cork (51.9333N,8.8W) to
+Ashtown,Dublin (53.3753N,6.3306W). The earliest it is possible for me
+to start my trip is 8:00 AM  &amp; the latest it is possible for me to
+arrive at my destination is 9:00 AM .  I estimate this trip will take
+ 30 minutes.
+I plan to return at eariest at 5:00 PM  &amp; arrive back at the trip
+origin at 6:00 PM . I estimate the return trip will take  30 minutes.
+
+Additional Comments: 
+
+
+
+
+To see this tripmatch in html follow the link below
+http://www.travelsmart.ie/complete_authenticate.php?email_address=johnny_b_goode@yahoo.com&amp;auth=fce4889a19a9aaadf14e4a3ecbf868f6&amp;saved_tripmatch_id=2
+

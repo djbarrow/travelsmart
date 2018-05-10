@@ -1,0 +1,23 @@
+insert into vehicle_type values (10,"Supermini",10,1100,33);
+insert into vehicle_type values (20,"Saloon/Hatchback",10,1500,28);
+insert into vehicle_type values (30,"Hot Hatch/Cabriolet",10,1700,25);
+insert into vehicle_type values (40,"Station Wagon",10,1800,25);
+insert into vehicle_type values (50,"Executive Car",10,2500,20);
+insert into vehicle_type values (60,"Commercial Van",20,1800,27);
+insert into vehicle_type values (70,"Pick Up",20,3000,20);
+insert into vehicle_type values (80,"4x4",20,3000,20);
+insert into vehicle_type values (90,"SUV",20,3000,20);
+insert into vehicle_type values (100,"Commercial Van",20,1800,27);
+insert into vehicle_type values (110,"Mini Bus",20,2800,23);
+insert into vehicle_type values (120,"Rigid Lorry",20,10000,17);
+insert into vehicle_type values (130,"Bus",20,25000,14);
+insert into vehicle_type values (140,"Articulated Truck",20,30000,7);
+
+insert into fuel values (10,"Petrol",2.3);
+insert into fuel values (20,"Diesel",2.7);
+insert into fuel values (30,"Biodiesel from waste oil",0.8);
+insert into fuel values (40,"Biodiesel from waste oil with ethanol from plant materials",0);
+insert into fuel values (50,"Vegetable oil",0);
+insert into fuel values (60,"Methanol made from natural gas",4.6);
+insert into fuel values (70,"Methanol made from coal",9);
+insert into fuel values (80,"Methanol / Ethanol made from vegetable sources",0);

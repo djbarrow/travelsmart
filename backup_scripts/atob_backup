@@ -1,0 +1,9 @@
+#!/bin/bash
+date=`date +%Y%m%d`
+documentroot=/home/djbarrow/development/atob/www
+mkdir -p backup
+mysqldump --opt -uroot -ppassword atob | gzip -c > ./backup/atob_database-$date.gz
+olddir=`pwd`
+cd $documentroot
+tar -zcpvf $olddir/backup/atob_uploads-$date.tgz uploads
+cd $olddir

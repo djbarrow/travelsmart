@@ -1,0 +1,15 @@
+body { background-color: FFFFFF }
+h1 { color : CC6600 }
+h2 { color : CC6600 }
+h3 { color : CC6600 }
+h4 { color : CC6600 }
+th { color : CC6600 }
+A:link { color: 9966CC }
+A:visited {color: 996600 }
+A:active {color: CC00FF }
+.error { color:red; font-size: small; }
+.error_medium { color:red; font-size: medium; }
+.error_big { color:red; font-size: x-large; }
+.image_border { border-style: inset; border-color: 00CCFF; border-width: 5px; }
+.list_style_1 { background-color: FFFFFF; }
+.list_style_2 { background-color: E0E0FF; }
