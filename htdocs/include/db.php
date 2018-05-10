@@ -11,7 +11,7 @@ $databasename = "atob";
 #$db_password = "password";
 #$databasename = "atob";
 
-#/usr/local/mysql/bin/mysql -h mysql.ariasoft.ie -uatob -psca1rra 
+#/usr/local/mysql/bin/mysql -h mysql.ariasoft.ie -uatob -ppassword 
 
 function showerror()
 {
