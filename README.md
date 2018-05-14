@@ -21,4 +21,4 @@ mailing list if you are a carpool website developerm it is early days yet but
 I'm interested in getting all the carpool websites talking to each other, so, that
 a passenger on carpool website A can match with a driver on carpool website B.
 If I can get enough interest we will be writing an internet standard for carpool_protocol
-as an RFC.
+as an RFC & I'm looking for collaborators if any of ye are interested in internet immortality.
