@@ -24,3 +24,6 @@ If I can get enough interest we will be writing an internet standard for carpool
 as an RFC & I'm looking for collaborators if any of ye are interested in making sure carpooling
 works as each new website is dividing up the carpooler customer base even further without a carpool protocol,
 saving the environment and even internet rfc immortality.
+
+Subscription to the Carpool Protocol mailing list is available here 
+http://ariasoft.ie/mailman/listinfo/carpool_protocol_ariasoft.ie
