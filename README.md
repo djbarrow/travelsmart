@@ -1,4 +1,6 @@
 # Travelsmart
+This code was developed actively between 2006 and 2010.
+google maps api gets revised every few months and made backward incompatible this created problems for travelsmar,t which can be fixed by github copilot or similar ai, The code uses html4 which should not create problems.
 As my friend Pio who helped me develop this said in 2006.
 I think we've out googled google.
 This is my answer to Uber which google valued at $17 billion in 2013.
