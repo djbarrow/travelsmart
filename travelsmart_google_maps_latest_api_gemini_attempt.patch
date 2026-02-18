@@ -1,0 +1,730 @@
+diff -urN travelsmart/htdocs/add_new_location_int.php travelsmart.gemini/htdocs/add_new_location_int.php
+--- travelsmart/htdocs/add_new_location_int.php	2026-02-17 17:27:09.897271825 +0000
++++ travelsmart.gemini/htdocs/add_new_location_int.php	2026-02-18 11:53:38.255398813 +0000
+@@ -60,9 +60,9 @@
+    $retstr="";
+    if(fast_internet_connection())
+    {
+-      $retstr.="var point=new GLatLng({$lat},{$lon});"
++      $retstr.="var point=new google.maps.LatLng({$lat},{$lon});"
+ 	 . "map.panTo(point);"
+-	 . "gmarker.setPoint(point);";
++	 . "marker.setPosition(point);";
+    }
+    return $retstr;
+ }
+@@ -79,9 +79,7 @@
+    $retstr="";
+    if(fast_internet_connection())
+    {
+-      $retstr.="if (GBrowserIsCompatible()) {"
+-	 . "map.setZoom({$zoom_level});"
+-	 . "}";
++      $retstr.="map.setZoom({$zoom_level});";
+    }
+    $retstr.=pan_to($lat,$lon);
+    return $retstr;
+diff -urN travelsmart/htdocs/add_new_location.php travelsmart.gemini/htdocs/add_new_location.php
+--- travelsmart/htdocs/add_new_location.php	2026-02-17 17:27:09.897271825 +0000
++++ travelsmart.gemini/htdocs/add_new_location.php	2026-02-18 11:54:59.168734436 +0000
+@@ -124,9 +124,9 @@
+    $retstr=set_latlon_textfields($lat,$lon);
+    if(fast_internet_connection())
+    {
+-      $retstr.="var point=new GLatLng({$lat},{$lon});"
++      $retstr.="var point=new google.maps.LatLng({$lat},{$lon});"
+       . "map.panTo(point);"
+-      . "gmarker.setPoint(point);";
++      . "marker.setPosition(point);";
+    }
+    return $retstr;
+ 
+@@ -149,14 +149,11 @@
+       $ne_longitude=$row["ne_longitude"];
+       $lat=($sw_latitude+$ne_latitude)/2;
+       $lon=($sw_longitude+$ne_longitude)/2;
+-      $retstr = "if (GBrowserIsCompatible()) {"
+-	 . "var rectbounds = new GLatLngBounds("
+-	 . "new GLatLng({$sw_latitude},{$sw_longitude}),"
+-	 . "new GLatLng({$ne_latitude},{$ne_longitude}));"
+-	 . "var zoom_level=map.getBoundsZoomLevel(rectbounds);"
+-	 . "map.setZoom(zoom_level);"
+-	 . pan_to($lat,$lon) 
+-	 . "}";
++      $retstr = "var rectbounds = new google.maps.LatLngBounds("
++	 . "new google.maps.LatLng({$sw_latitude},{$sw_longitude}),"
++	 . "new google.maps.LatLng({$ne_latitude},{$ne_longitude}));"
++	 . "map.fitBounds(rectbounds);"
++	 . pan_to($lat,$lon);
+    }
+    else 
+       $retstr="";
+@@ -180,9 +177,7 @@
+ 		 $outlat,$outlon);
+    if(fast_internet_connection())
+  {
+-      $retstr = "if (GBrowserIsCompatible()) {"
+-	 . pan_to($outlat,$outlon)
+-	 . "}";
++      $retstr = pan_to($outlat,$outlon);
+  }
+  else
+     $retstr= set_latlon_textfields($outlat,$outlon);
+diff -urN travelsmart/htdocs/get_directions.php travelsmart.gemini/htdocs/get_directions.php
+--- travelsmart/htdocs/get_directions.php	2026-02-17 17:27:09.905271672 +0000
++++ travelsmart.gemini/htdocs/get_directions.php	2026-02-17 17:50:07.473145730 +0000
+@@ -169,7 +169,7 @@
+    $template->loadTemplatefile("get_directions2.tpl",true,true);
+    $template->setVariable("CSS_FILE",get_css_name());
+    $template->setVariable("LOGOS",get_logos_str());
+-   $template->setVariable("GOOGLE_MAPS_KEY",get_google_maps_key());
++   $template->setVariable("GOOGLE_MAPS_KEY",get_google_maps_key() . "&callback=initialize");
+    $template->setVariable("JLEG0_LAT",$jleg[0]->lat);
+    $template->setVariable("JLEG0_LON",$jleg[0]->lon);
+    $template->setVariable("JLEG1_LAT",$jleg[1]->lat);
+diff -urN travelsmart/htdocs/include/defines.new.php travelsmart.gemini/htdocs/include/defines.new.php
+--- travelsmart/htdocs/include/defines.new.php	2026-02-17 17:27:09.909271595 +0000
++++ travelsmart.gemini/htdocs/include/defines.new.php	2026-02-18 11:50:12.954282219 +0000
+@@ -41,14 +41,5 @@
+ $administrator_email_address="barrow_dj@yahoo.com";
+ //$developer_email_addr="djbarrow@localhost";
+ 
+-$google_maps_key="http://maps.google.com/maps?file=api&amp;v=2&amp;key=";
+-// 10.0.0.2
+-//$google_maps_key.="ABQIAAAAEtCdkUSk-YhLUVXxe6VOiBQorY6mP03n72EKZcQG5HcZqK1IwRS1w-rulFgldPEfCI6PBJDMsK3Ycg"
+-// localhost
+-$google_maps_key.="ABQIAAAAEtCdkUSk-YhLUVXxe6VOiBT2yXp_ZAY8_ufC3CFXhHIE1NvwkxQXIa6HpPnZ5XKmYStG2dQC5lTfrA";
+ 
+-// travelsmart
+-//$google_maps_key.="ABQIAAAAEtCdkUSk-YhLUVXxe6VOiBQikexyDJI62025KMqB6GENm6XaHhTVz5ARBFpF8tIEt8gAEPnQApw-xQ";
+-// 206.196.111.221
+-//$google_maps_key.="ABQIAAAAEtCdkUSk-YhLUVXxe6VOiBRfhqjeGoLRnGoXI-L2sWoX6NRAnxTXAcmUNwiI9vZdc6OxJuL9mMstJA";
+ ?>
+diff -urN travelsmart/htdocs/include/logos.php travelsmart.gemini/htdocs/include/logos.php
+--- travelsmart/htdocs/include/logos.php	2026-02-17 17:27:09.909271595 +0000
++++ travelsmart.gemini/htdocs/include/logos.php	2026-02-18 11:49:54.254919858 +0000
+@@ -84,45 +84,11 @@
+ 
+ function get_google_maps_key()
+ {
+-   //return "";
+-   $server_name=$_SERVER["SERVER_NAME"];
+-   $google_maps_key="http://maps.google.com/maps?file=api&amp;v=2&amp;key=";
+-   
+-   if(strstr($server_name,"travelsmart.ie"))
+-      $google_maps_key.="ABQIAAAAEtCdkUSk-YhLUVXxe6VOiBQikexyDJI62025KMqB6GENm6XaHhTVz5ARBFpF8tIEt8gAEPnQApw-xQ";
+-   else if(strcmp($server_name,"10.0.0.2")==0)
+-      $google_maps_key.="ABQIAAAAEtCdkUSk-YhLUVXxe6VOiBQorY6mP03n72EKZcQG5HcZqK1IwRS1w-rulFgldPEfCI6PBJDMsK3Ycg";
+-   else if(strcmp($server_name,"localhost")==0)
+-      $google_maps_key.="ABQIAAAAEtCdkUSk-YhLUVXxe6VOiBT2yXp_ZAY8_ufC3CFXhHIE1NvwkxQXIa6HpPnZ5XKmYStG2dQC5lTfrA";
++    // IMPORTANT: You need to get a new API key from the Google Cloud Platform console.
++    // The old API keys are not compatible with the new Google Maps JavaScript API.
++    $apiKey = "ABQIAAAAEtCdkUSk-YhLUVXxe6VOiBREZam7RlfwCDXyRP7laae9KhTE2BTgWkaoljbQ2EVTdHcd6lDyqk3h7A"; // <--- REPLACE WITH YOUR API KEY
+ 
+-   else if(strcmp($server_name,"206.196.111.221")==0)
+-      $google_maps_key.="ABQIAAAAEtCdkUSk-YhLUVXxe6VOiBRfhqjeGoLRnGoXI-L2sWoX6NRAnxTXAcmUNwiI9vZdc6OxJuL9mMstJA";
+-   else
+-      die("No appropriate google maps key found.");
+-   return $google_maps_key;
+-}
+-
+-function get_google_maps_width_height_string()
+-{
+-   if(isset($_SESSION["screen_width"])&&isset($_SESSION["screen_height"]))
+-   {
+-      $width=(int)($_SESSION["screen_width"]*7.5/10);
+-      $height=(int)($_SESSION["screen_height"]*5.5/10);
+-   }
+-   else
+-   {
+-      $width=700;
+-      $height=380;
+-   }
+-   return "width: {$width}px; height: {$height}px";
+-}
+-
+-function get_google_maps_mapsize_control_string()
+-{
+-   $height=480;
+-   if(isset($_SESSION["screen_height"]))
+-      $height=$_SESSION["screen_height"];
+-   return $height<=480 ? "GSmallMapControl" :"GLargeMapControl";
++    return "https://maps.googleapis.com/maps/api/js?key=" . $apiKey;
+ }
+ 
+ function get_google_analytics_str()
+diff -urN travelsmart/htdocs/index.php travelsmart.gemini/htdocs/index.php
+--- travelsmart/htdocs/index.php	2026-02-17 17:27:09.913271518 +0000
++++ travelsmart.gemini/htdocs/index.php	2026-02-17 17:49:23.642261381 +0000
+@@ -190,7 +190,7 @@
+    {
+        $_SESSION["animation_done"]=1;
+        show_nested_variable_block($template,"DISPLAY_MAP",
+-				  "GOOGLE_MAPS_KEY",get_google_maps_key());
++				  "GOOGLE_MAPS_KEY",get_google_maps_key() . "&callback=initMap");
+    }
+    else
+       show_nested_block($template,"NO_MAP");
+diff -urN travelsmart/htdocs/process_trip_map.php travelsmart.gemini/htdocs/process_trip_map.php
+--- travelsmart/htdocs/process_trip_map.php	2026-02-17 17:27:09.913271518 +0000
++++ travelsmart.gemini/htdocs/process_trip_map.php	2026-02-17 17:47:47.892298324 +0000
+@@ -23,11 +23,7 @@
+ $template->setVariable("CSS_FILE",get_css_name());
+ $template->setVariable("LOGOS",get_logos_str());
+ $template->setCurrentBlock("GOOGLE_MAPS_KEY");
+-$template->setVariable("GOOGLE_MAPS_KEY",get_google_maps_key());
+-$template->parseCurrentBlock();
+-$template->setCurrentBlock("__global__");
+-$template->setVariable("GMAP_CONTROL",
+-		       get_google_maps_mapsize_control_string());
++$template->setVariable("GOOGLE_MAPS_KEY",get_google_maps_key() . "&callback=initMap");
+ $marker=array();
+ $marker[0]=$trip1->trip_origin_latlon;
+ $marker[1]=$trip1->trip_destination_latlon;
+diff -urN travelsmart/htdocs/templates/add_new_location_int.tpl travelsmart.gemini/htdocs/templates/add_new_location_int.tpl
+--- travelsmart/htdocs/templates/add_new_location_int.tpl	2026-02-17 17:27:09.917271442 +0000
++++ travelsmart.gemini/htdocs/templates/add_new_location_int.tpl	2026-02-18 11:53:19.284027011 +0000
+@@ -3,36 +3,36 @@
+ <head>
+ <title>Add International Trip Location</title>
+ <link rel=stylesheet href={CSS_FILE}>
+-<!-- BEGIN FAST_INTERNET_ACCESS -->
+-    <script src="{GOOGLE_MAPS_KEY}"
+-      type="text/javascript"></script>
+-    <script type="text/javascript">
++<script type="text/javascript">
+     //<![CDATA[
+-	var map;
+-	var gmarker;
+-	var geocoder;
+-    function load() {
+-      set_checkboxes();
+-      if (GBrowserIsCompatible()) {
+-        map = new GMap2(document.getElementById("map"));
+-        map.addControl(new {GMAP_CONTROL}());
+-        map.addControl(new GMapTypeControl());
+-	point=new GLatLng(52.574444,-7.550278);
+-	map.setCenter(point,6);
+-	gmarker=new GMarker(point);
+-	map.addOverlay(gmarker);
+-	GEvent.addListener(map, "click", function(marker, point) {
+-	pan_to(point.lat(),point.lng());
+-	});
+-	geocoder = new GClientGeocoder();	
+-      }
+-      modify_address_description();
++    var map;
++    var marker;
++    var geocoder;
++
++    function initMap() {
++        set_checkboxes();
++        if (document.getElementById("map")) {
++            map = new google.maps.Map(document.getElementById("map"), {
++                zoom: 6,
++                center: { lat: 52.574444, lng: -7.550278 },
++            });
++            marker = new google.maps.Marker({
++                position: { lat: 52.574444, lng: -7.550278 },
++                map: map,
++            });
++            map.addListener("click", (e) => {
++                pan_to(e.latLng.lat(), e.latLng.lng());
++            });
++        }
++        geocoder = new google.maps.Geocoder();
++        modify_address_description();
+     }
+     //]]>
+-    </script>
++</script>
+ </head>
+-<body onload="load()" onunload="GUnload()">
++<body onload="initMap()">
+ {LOGOS}
++<!-- BEGIN FAST_INTERNET_ACCESS -->
+ <table>
+ <tr>
+ <td width=50%></td><td>
+@@ -42,35 +42,6 @@
+ </table>
+ <!-- END FAST_INTERNET_ACCESS -->
+ <!-- BEGIN POST_FAST_INTERNET_ACCESS -->
+-    <script src="{GOOGLE_MAPS_KEY}"
+-      type="text/javascript"></script>
+-    <script type="text/javascript">
+-    //<![CDATA[
+-	var map;
+-	var gmarker;
+-	var geocoder;
+-    function load() {
+-      set_checkboxes();	
+-      if (GBrowserIsCompatible()) {
+-        map = new GMap2(document.getElementById("map"));
+-        map.addControl(new {GMAP_CONTROL}());
+-        map.addControl(new GMapTypeControl());
+-	point=new GLatLng(52.574444,-7.550278);
+-	map.setCenter(point,6);
+-        gmarker=new GMarker(point);
+-	map.addOverlay(gmarker);
+-	GEvent.addListener(map, "click", function(marker, point) {
+-	pan_to(point.lat(),point.lng());
+-	});
+-	geocoder = new GClientGeocoder();
+-	update_latlon();	
+-      }
+-    }
+-    //]]>
+-    </script>
+-</head>
+-<body onload="load()" onunload="GUnload()">
+-{LOGOS}
+ <table>
+ <tr>
+ <td width=50%></td><td>
+@@ -79,65 +50,24 @@
+ </tr>
+ </table>
+ <!-- END POST_FAST_INTERNET_ACCESS -->
+-<!-- BEGIN SLOW_INTERNET_ACCESS -->
+-    <script src="{GOOGLE_MAPS_KEY}"
+-      type="text/javascript"></script>
+-    <script type="text/javascript">
+-    //<![CDATA[
+-	var map;
+-	var gmarker;
+-	var geocoder;
+-    function load() {
+-      set_checkboxes();
+-      if (GBrowserIsCompatible()) {
+-	geocoder = new GClientGeocoder();	
+-      }
+-      modify_address_description();
+-    }
+-    //]]>
+-    </script>
+-</head>
+-<body onload="load()" onunload="GUnload()">
+-{LOGOS}
+-<!-- END SLOW_INTERNET_ACCESS -->
+-<!-- BEGIN POST_SLOW_INTERNET_ACCESS -->
+-    <script src="{GOOGLE_MAPS_KEY}"
+-      type="text/javascript"></script>
+-    <script type="text/javascript">
+-    //<![CDATA[
+-	var map;
+-	var gmarker;
+-	var geocoder;
+-    function load() {
+-      set_checkboxes();	
+-      if (GBrowserIsCompatible()) {
+-	geocoder = new GClientGeocoder();	
+-      }
+-      modify_address_description();
+-    }
+-    //]]>
+-    </script>
+-</head>
+-<body onload="load()" onunload="GUnload()">
+-{LOGOS}
+-<!-- END POST_SLOW_INTERNET_ACCESS -->
+-<script>
+-function goto_address(response)
+-{
+-	if (!response || response.Status.code != 200) {
+-        	return;
+-      	} else {	
+-        	place = response.Placemark[0];
+-		pan_zoom_to(place.Point.coordinates[1],
+-			place.Point.coordinates[0],13);
+-		document.add_new_location.location_name.value=place.address;
+-      }
+-}
+ 
+-function goto_location()
+-{
+-	geocoder.getLocations(document.add_new_location.location_name.value,
+-				goto_address);
++<script>
++function goto_location() {
++    const address = document.add_new_location.location_name.value;
++    geocoder.geocode({ address: address }, (results, status) => {
++        if (status === "OK") {
++            const place = results[0];
++            pan_zoom_to(
++                place.geometry.location.lat(),
++                place.geometry.location.lng(),
++                13
++            );
++            document.add_new_location.location_name.value =
++                place.formatted_address;
++        } else {
++            alert("Geocode was not successful for the following reason: " + status);
++        }
++    });
+ }
+ </script>
+ <form name="add_new_location" action="add_new_location_int.php" method=post>
+diff -urN travelsmart/htdocs/templates/add_new_location.tpl travelsmart.gemini/htdocs/templates/add_new_location.tpl
+--- travelsmart/htdocs/templates/add_new_location.tpl	2026-02-17 17:27:09.917271442 +0000
++++ travelsmart.gemini/htdocs/templates/add_new_location.tpl	2026-02-18 11:54:29.053723392 +0000
+@@ -3,37 +3,37 @@
+ <head>
+ <title>Add Trip Location</title>
+ <link rel=stylesheet href={CSS_FILE}>
+-<!-- BEGIN FAST_INTERNET_ACCESS -->
+-    <script src="{GOOGLE_MAPS_KEY}"
+-      type="text/javascript"></script>
+-    <script type="text/javascript">
++<script type="text/javascript">
+     //<![CDATA[
+-	var map;
+-	var gmarker;
++    var map;
++    var marker;
++
+     function load() {
+-      set_checkboxes(); 	
+-      make_country_list("{COUNTRY}");
+-      set_cc_adm1_region("{COUNTRY}",0,true);
+-      make_direction_from_nearby_location_list(-100);
+-      make_distance_from_nearby_location_list(-1);	
+-      if (GBrowserIsCompatible()) {
+-        map = new GMap2(document.getElementById("map"));
+-        map.addControl(new {GMAP_CONTROL}());
+-        map.addControl(new GMapTypeControl());
+-	point=new GLatLng(52.574444,-7.550278);
+-	map.setCenter(point,6);
+-	gmarker=new GMarker(point);
+-	map.addOverlay(gmarker);
+-	GEvent.addListener(map, "click", function(marker, point) {
+-	set_table_info_from_lat_lon(point.lat(),point.lng());
+-	});
+-      }
++        set_checkboxes();
++        make_country_list("{COUNTRY}");
++        set_cc_adm1_region("{COUNTRY}", 0, true);
++        make_direction_from_nearby_location_list(-100);
++        make_distance_from_nearby_location_list(-1);
++        if (document.getElementById("map")) {
++            map = new google.maps.Map(document.getElementById("map"), {
++                zoom: 6,
++                center: { lat: 52.574444, lng: -7.550278 }
++            });
++            marker = new google.maps.Marker({
++                position: { lat: 52.574444, lng: -7.550278 },
++                map: map,
++            });
++            map.addListener("click", function (e) {
++                set_table_info_from_lat_lon(e.latLng.lat(), e.latLng.lng());
++            });
++        }
+     }
+     //]]>
+     </script>
+ </head>
+-<body onload="load()" onunload="GUnload()">
++<body onload="load()">
+ {LOGOS}
++<!-- BEGIN FAST_INTERNET_ACCESS -->
+ <table>
+ <tr>
+ <td width=50%></td><td>
+@@ -43,37 +43,6 @@
+ </table>
+ <!-- END FAST_INTERNET_ACCESS -->
+ <!-- BEGIN POST_FAST_INTERNET_ACCESS -->
+-    <script src="{GOOGLE_MAPS_KEY}"
+-      type="text/javascript"></script>
+-    <script type="text/javascript">
+-    //<![CDATA[
+-	var map;
+-	var gmarker;
+-    function load() {
+-      set_checkboxes();	
+-      make_country_list("{COUNTRY}");
+-      set_cc_adm1_region("{COUNTRY}",{ADM1_REGION_UFI},false);
+-      set_nearby_location({ADM1_REGION_UFI},{NEARBY_LOCATION_UFI});	
+-      make_direction_from_nearby_location_list({DIRECTION_FROM_NEARBY_LOCATION});
+-      make_distance_from_nearby_location_list({DISTANCE_FROM_NEARBY_LOCATION});
+-      if (GBrowserIsCompatible()) {
+-        map = new GMap2(document.getElementById("map"));
+-        map.addControl(new {GMAP_CONTROL}());
+-        map.addControl(new GMapTypeControl());
+-	point=new GLatLng(52.574444,-7.550278);
+-	map.setCenter(point,6);
+-        gmarker=new GMarker(point);
+-	map.addOverlay(gmarker);
+-	GEvent.addListener(map, "click", function(marker, point) {
+-	set_table_info_from_lat_lon(point.lat(),point.lng());
+-	});
+-      }
+-    }
+-    //]]>
+-    </script>
+-</head>
+-<body onload="load()" onunload="GUnload()">
+-{LOGOS}
+ <table>
+ <tr>
+ <td width=50%></td><td>
+@@ -82,40 +51,7 @@
+ </tr>
+ </table>
+ <!-- END POST_FAST_INTERNET_ACCESS -->
+-<!-- BEGIN SLOW_INTERNET_ACCESS -->
+-    <script type="text/javascript">
+-    //<![CDATA[
+-    function load() {
+-      set_checkboxes();
+-      make_country_list("{COUNTRY}");
+-      set_cc_adm1_region("{COUNTRY}",0,true);
+-      make_direction_from_nearby_location_list(-100);
+-      make_distance_from_nearby_location_list(-1);
+-    }
+-    //]]>
+-    </script>
+-</head>
+-<body onload="load()">
+-{LOGOS}
+-<!-- END SLOW_INTERNET_ACCESS -->
+-<!-- BEGIN POST_SLOW_INTERNET_ACCESS -->
+-    <script type="text/javascript">
+-    //<![CDATA[
+-    function load() {
+-      set_checkboxes();
+-      make_country_list("{COUNTRY}");
+-      set_cc_adm1_region("{COUNTRY}",{ADM1_REGION_UFI},false);
+-      set_nearby_location({ADM1_REGION_UFI},{NEARBY_LOCATION_UFI});
+-      make_direction_from_nearby_location_list({DIRECTION_FROM_NEARBY_LOCATION});
+-      make_distance_from_nearby_location_list({DISTANCE_FROM_NEARBY_LOCATION});
+-     
+-    }
+-    //]]>
+-    </script>
+-</head>
+-<body onload="load()">
+-{LOGOS}
+-<!-- END POST_SLOW_INTERNET_ACCESS -->
++
+ <form name="add_new_location" action="add_new_location.php" method=post>
+ <table align=center>
+ <!-- BEGIN ENTER_INTERNATIONAL_LOCATION -->
+diff -urN travelsmart/htdocs/templates/display_trip_map.tpl travelsmart.gemini/htdocs/templates/display_trip_map.tpl
+--- travelsmart/htdocs/templates/display_trip_map.tpl	2026-02-17 17:27:09.917271442 +0000
++++ travelsmart.gemini/htdocs/templates/display_trip_map.tpl	2026-02-18 11:50:54.908858775 +0000
+@@ -9,39 +9,46 @@
+ <!-- END GOOGLE_MAPS_KEY -->
+ <script type="text/javascript">
+ //<![CDATA[
+-function load() {
+-	 if(GBrowserIsCompatible()) {
+-		var map = new GMap2(document.getElementById("map"));
+-		map.addControl(new {GMAP_CONTROL}());
+-		function createMarker(point,text) {
+-			 var marker = new GMarker(point);
+-			 GEvent.addListener(marker,"click",function() {
+-			 		marker.openInfoWindowHtml(text);
+-					
+-			 });
+-			 return marker;
+-		}
+-		var marker = new Array();
+-<!-- BEGIN SET_MARKERS -->
+-     	   	marker[{INDEX}] = new GLatLng({LAT},{LON});
+-<!-- END SET_MARKERS -->
+-     	 	var bounds = new GLatLngBounds;
+-		for (var i=0;i<marker.length;i++) {
+-		    bounds.extend(marker[i]);
+-		}
+-		var zoom_level=map.getBoundsZoomLevel(bounds);
+-<!-- BEGIN SET_LATLON -->
+-		map.setCenter(new GLatLng({LAT},{LON}),zoom_level);
+-<!-- END SET_LATLON -->
+-<!-- BEGIN SET_MARKER_TEXT -->
+-     	       map.addOverlay(createMarker(marker[{INDEX}],"{TEXT}"));
+-<!-- END SET_MARKER_TEXT -->
+-     	 }
++function initMap() {
++    const map = new google.maps.Map(document.getElementById("map"), {
++        zoom: 10,
++        center: { lat: -34.397, lng: 150.644 },
++    });
++
++    const markers = [];
++    <!-- BEGIN SET_MARKERS -->
++    markers.push({ lat: {LAT}, lng: {LON} });
++    <!-- END SET_MARKERS -->
++
++    const bounds = new google.maps.LatLngBounds();
++    for (const marker of markers) {
++        bounds.extend(marker);
++    }
++
++    const infoWindow = new google.maps.InfoWindow();
++    const markerInfo = [];
++    <!-- BEGIN SET_MARKER_TEXT -->
++    markerInfo.push("{TEXT}");
++    <!-- END SET_MARKER_TEXT -->
++
++    for (let i = 0; i < markers.length; i++) {
++        const marker = new google.maps.Marker({
++            position: markers[i],
++            map: map,
++        });
++
++        marker.addListener("click", () => {
++            infoWindow.setContent(markerInfo[i]);
++            infoWindow.open(map, marker);
++        });
++    }
++
++    map.fitBounds(bounds);
+ }
+ //]]>
+ </script>
+ </head>
+-<body onload="load()" onunload="GUnload()">
++<body>
+ {LOGOS}
+ <table>
+ <td width=50%></td><td>
+diff -urN travelsmart/htdocs/templates/get_directions2.tpl travelsmart.gemini/htdocs/templates/get_directions2.tpl
+--- travelsmart/htdocs/templates/get_directions2.tpl	2026-02-17 17:27:09.917271442 +0000
++++ travelsmart.gemini/htdocs/templates/get_directions2.tpl	2026-02-18 11:51:43.743213571 +0000
+@@ -11,19 +11,49 @@
+    var directionsPanel=new Array();
+    var directions=new Array();
+ function initialize() {
+-	var i;
+-	for(i=0;i<3;i++)
+-	{
+-      		map[i] = new GMap2(document.getElementById("map" + i));
+-      		directionsPanel[i] = document.getElementById("route" + i);
+-      		directions[i] = new GDirections(map[i], directionsPanel[i]);
+-	}
+-	directions[0].load("{JLEG0_LAT},{JLEG0_LON} to {JLEG1_LAT},{JLEG1_LON}");
+-	directions[1].load("{JLEG1_LAT},{JLEG1_LON} to {JLEG2_LAT},{JLEG2_LON}");
+-	directions[2].load("{JLEG2_LAT},{JLEG2_LON} to {JLEG3_LAT},{JLEG3_LON}");
++    const directionsService = new google.maps.DirectionsService();
++
++    const calculateAndDisplayRoute = (directionsService, directionsDisplay, start, end) => {
++        directionsService.route(
++            {
++                origin: start,
++                destination: end,
++                travelMode: "DRIVING",
++            },
++            (response, status) => {
++                if (status === "OK") {
++                    directionsDisplay.setDirections(response);
++                } else {
++                    window.alert("Directions request failed due to " + status);
++                }
++            }
++        );
++    };
++
++    const legs = [
++        ["{JLEG0_LAT},{JLEG0_LON}", "{JLEG1_LAT},{JLEG1_LON}"],
++        ["{JLEG1_LAT},{JLEG1_LON}", "{JLEG2_LAT},{JLEG2_LON}"],
++        ["{JLEG2_LAT},{JLEG2_LON}", "{JLEG3_LAT},{JLEG3_LON}"],
++    ];
++
++    for (let i = 0; i < legs.length; i++) {
++        const directionsDisplay = new google.maps.DirectionsRenderer();
++        const map = new google.maps.Map(document.getElementById("map" + i), {
++            zoom: 7,
++            center: { lat: 41.85, lng: -87.65 },
++        });
++        directionsDisplay.setMap(map);
++        directionsDisplay.setPanel(document.getElementById("route" + i));
++        calculateAndDisplayRoute(
++            directionsService,
++            directionsDisplay,
++            legs[i][0],
++            legs[i][1]
++        );
+     }
++}
+     </script>
+-<body onload="initialize()">
++<body>
+ {LOGOS}
+ <br>
+ <center>
+diff -urN travelsmart/htdocs/templates/login.tpl travelsmart.gemini/htdocs/templates/login.tpl
+--- travelsmart/htdocs/templates/login.tpl	2026-02-17 17:27:09.917271442 +0000
++++ travelsmart.gemini/htdocs/templates/login.tpl	2026-02-18 11:55:44.803241437 +0000
+@@ -17,41 +17,30 @@
+       type="text/javascript"></script>
+     <script type="text/javascript">
+     //<![CDATA[
+-    function load() {
+-      set_checkboxes(); 	
+-      if (GBrowserIsCompatible()) {
+-        var map = new GMap2(document.getElementById("map"));
+-	 map.setCenter(new GLatLng(48.80686,2.28516),5);
+-	point=new GLatLng(53.34748,-6.25976)
+-        window.setTimeout(function() {
+-          map.panTo(point);
+-        }, 5000);
+-	window.setTimeout(function() {
+-          	map.setZoom(7);
+-		map.panTo(point);
+-        	},7000);
+-	window.setTimeout(function() {
+-          	map.setZoom(9);
+-		map.panTo(point);
+-        	},9000);
+-	window.setTimeout(function() {
+-          	map.setZoom(11);
+-		map.panTo(point);
+-        	},11000);
+-	window.setTimeout(function() {
+-          	map.setZoom(13);
+-		map.panTo(point);
+-        	},13000);
+-	window.setTimeout(function() {
+-          	map.setZoom(15);
+-		map.panTo(point);
+-        	},15000);
+-     }	
+-  }
++    function initMap() {
++    const map = new google.maps.Map(document.getElementById("map"), {
++        center: { lat: 48.80686, lng: 2.28516 },
++        zoom: 5,
++    });
++
++    const point = { lat: 53.34748, lng: -6.25976 };
++
++    let i = 0;
++    const zoomLevels = [7, 9, 11, 13, 15];
++    const moveCamera = () => {
++        if (i < zoomLevels.length) {
++            map.moveCamera({ center: point, zoom: zoomLevels[i] });
++            i++;
++            setTimeout(moveCamera, 2000);
++        }
++    };
++    setTimeout(moveCamera, 5000);
++}
+     //]]>
+     </script>
+-<body onload="load()">
++<body onload="set_checkboxes();initMap()">
+ {LOGOS}
++<!-- BEGIN DISPLAY_MAP -->
+ <table>
+ <tr>
+ <td width=50%></td><td>
+@@ -61,8 +50,6 @@
+ </table>
+ <!-- END DISPLAY_MAP -->
+ <!-- BEGIN NO_MAP -->
+-<body onload="set_checkboxes()">
+-{LOGOS}
+ <!-- END NO_MAP -->
+ <center>
+ <table>

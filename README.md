@@ -1,4 +1,10 @@
 # Travelsmart
+Gemini api attempt at fixing my code to the latest google maps api is at 
+travelsmart_google_maps_latest_api_gemini_attempt.patch
+Review the patch and fix remaining bugs if you wish to resurrect travelsmart
+website.
+To apply the patch use patch -p1 < travelsmart_google_maps_latest_api_gemini_attempt.patch in the root directory.
+
 This code was developed actively between 2006 and 2010.
 google maps api gets revised every few months and made backward incompatible this created problems for travelsmar,t which can be fixed by github copilot or similar ai, The code uses html4 which should not create problems.
 As my friend Pio who helped me develop this said in 2006.
